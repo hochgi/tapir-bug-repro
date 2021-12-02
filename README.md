@@ -1,7 +1,7 @@
-# Repruding a bug in [Tapir](https://github.com/softwaremill/tapir/)
+# Reproducing a bug in [Tapir](https://github.com/softwaremill/tapir/)
 
-Tapir version: 0.19.0
-Scala version: 2.13.7
+- Tapir version: 0.19.0
+- Scala version: 2.13.7
 
 ## Description
 The code in this repo compiles just fine with no errors.
