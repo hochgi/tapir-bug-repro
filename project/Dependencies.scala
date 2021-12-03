@@ -37,7 +37,7 @@ object Dependencies {
       override val circe              = "0.14.1"
       override val magnolia           = "0.17.0"
       override val akkaActorArtifact  = "akka-actor-typed"
-      override val tapir: Tapir       = Tapir("com.softwaremill.sttp.tapir", "0.19.0")
+      override val tapir: Tapir       = Tapir("com.softwaremill.sttp.tapir", "0.19.1")
     }
 
     object S213 extends Version {
@@ -48,7 +48,7 @@ object Dependencies {
       override val circe              = "0.14.1"
       override val magnolia           = "0.17.0"
       override val akkaActorArtifact  = "akka-actor-typed"
-      override val tapir: Tapir       = Tapir("com.softwaremill.sttp.tapir", "0.19.0")
+      override val tapir: Tapir       = Tapir("com.softwaremill.sttp.tapir", "0.19.1")
     }
   }
 

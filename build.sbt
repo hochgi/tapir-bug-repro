@@ -139,7 +139,7 @@ lazy val swagger = (project in file("repro-swagger"))
   .settings(
     sharedSettings,
     name := "repro-swagger",
-    crossScalaVersions := scala213CrossVersion,
+    crossScalaVersions := scala212n213CrossVersions,
     publish / skip := true,
     libraryDependencies ++= {
       val v = depver(scalaBinaryVersion.value)
