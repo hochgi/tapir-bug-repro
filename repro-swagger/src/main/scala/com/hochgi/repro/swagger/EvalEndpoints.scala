@@ -21,23 +21,19 @@ object EvalEndpoints {
    * Forcing all places to use the same shared method ensures
    * build & runtime swagger definitions stays consistent.
    */
-  def evalAll[T](evalRegisterText: ep.SemiStructured.RegisterTextEndpoint => T,
-                 evalQuerySemiStructured: ep.SemiStructured.QuerySemiStructuredEndpoint => T,
-                 evalListSemiStructureds: ep.SemiStructured.ListSemiStructuredsEndpoint => T,
-                 evalBuild:        ep.Info.BuildEndpoint           => T,
-                 evalAllConfig:    ep.Info.AllConfigEndpoint       => T,
-                 evalConfig:       ep.Info.ConfigEndpoint          => T): EvaluatedAPI[T] = {
+  def evalAll[T](evalgetTree:   ep.Tree.TreeEndpoint      => T,
+                 evalBuild:     ep.Info.BuildEndpoint     => T,
+                 evalAllConfig: ep.Info.AllConfigEndpoint => T,
+                 evalConfig:    ep.Info.ConfigEndpoint    => T): EvaluatedAPI[T] = {
     val endpoints = List(
-      ep.SemiStructured.registerText -> evalRegisterText(ep.SemiStructured.registerText),
-      ep.SemiStructured.querySemiStructured -> evalQuerySemiStructured(ep.SemiStructured.querySemiStructured),
-      ep.SemiStructured.listSemiStructureds -> evalListSemiStructureds(ep.SemiStructured.listSemiStructureds),
-      ep.Info.build           -> evalBuild(ep.Info.build),
-      ep.Info.allConfig       -> evalAllConfig(ep.Info.allConfig),
-      ep.Info.config          -> evalConfig(ep.Info.config))
+      ep.Tree.printTree -> evalgetTree(ep.Tree.printTree),
+      ep.Info.build     -> evalBuild(ep.Info.build),
+      ep.Info.allConfig -> evalAllConfig(ep.Info.allConfig),
+      ep.Info.config    -> evalConfig(ep.Info.config))
 
     val openApiDocs: OpenAPI = OpenAPIDocsInterpreter().toOpenAPI(
       es      = endpoints.map(_._1),
-      title   = "Evidence Manager API",
+      title   = "Sandbox API",
       version = Info.version)
     EvaluatedAPI(endpoints, openApiDocs)
   }

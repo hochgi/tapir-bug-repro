@@ -15,7 +15,7 @@ import com.hochgi.repro.swagger.EvalEndpoints
 import com.hochgi.repro.swagger.EvalEndpoints.EvaluatedAPI
 import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
-import sttp.tapir.swagger.SwaggerUI
+import sttp.tapir.swagger.{SwaggerUI, SwaggerUIOptions}
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContext, Future}
@@ -26,13 +26,11 @@ object Server extends App with LazyLogging {
   // avoid slf4j noise by touching it first from single thread
   logger.debug("Starting server")
 
-  def endpointsAndRoutes(config: Config)(implicit ec: ExecutionContext): EvaluatedAPI[Route] = EvalEndpoints.evalAll(
-    evalRegisterText        = rt.SemiStructured.registerSemiStructured(ec),
-    evalQuerySemiStructured = rt.SemiStructured.querySemiStructured(ec),
-    evalListSemiStructureds = rt.SemiStructured.listSemiStructureds(ec),
-    evalBuild               = rt.Info.build,
-    evalAllConfig           = rt.Info.allConfig(config),
-    evalConfig              = rt.Info.config(config))
+  def endpointsAndRoutes(config: Config): EvaluatedAPI[Route] = EvalEndpoints.evalAll(
+    evalgetTree   = rt.Tree.getSample,
+    evalBuild     = rt.Info.build,
+    evalAllConfig = rt.Info.allConfig(config),
+    evalConfig    = rt.Info.config(config))
 
   def undocumentedRoutes(context:              ActorContext[NotUsed])
                         (implicit actorSystem: ActorSystem,
@@ -69,7 +67,9 @@ object Server extends App with LazyLogging {
     val evaluatedAPI          = endpointsAndRoutes(config)
     val (_, routes)           = evaluatedAPI.endpoints.unzip
     val docsAsYaml:    String = evaluatedAPI.openApiDocs.toYaml
-    val swaggerUIRoute: Route = AkkaHttpServerInterpreter().toRoute(SwaggerUI[Future](docsAsYaml, List("doc")))
+    val uiOptions             = SwaggerUIOptions.default.copy(pathPrefix = List("doc"))
+    val swaggerUIEndPs        = SwaggerUI[Future](docsAsYaml, uiOptions)
+    val swaggerUIRoute: Route = AkkaHttpServerInterpreter().toRoute(swaggerUIEndPs)
     val allRoutes:      Route = concat(swaggerUIRoute :: undocumented :: routes: _*)
     val serverConfig:  Config = config.getConfig("com.hochgi.repro.server")
     val port:             Int = serverConfig.getInt("port")

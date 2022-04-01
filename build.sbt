@@ -44,10 +44,7 @@ val sharedSettings = Seq(
   },
   scalacOptions ++= Seq("-target:jvm-1.8"),
   Test / scalacOptions ++= Seq("-target:jvm-1.8"),
-  libraryDependencies ++= Seq(
-    scalacheck % Test,
-    scalatest  % Test
-  )
+  libraryDependencies ++= Seq(scalatest  % Test, scalacheck(depver(scalaBinaryVersion.value)) % Test)
 )
 
 lazy val compat = (project in file("compat"))
@@ -57,57 +54,8 @@ lazy val compat = (project in file("compat"))
     crossScalaVersions := allScalaCrossVersions
   )
 
-lazy val jsonAst = (project in file("json-ast"))
-  .settings(
-    sharedSettings,
-    name := "json-ast",
-    crossScalaVersions := allScalaCrossVersions
-  )
-
-lazy val jsonOps = (project in file("json-ops"))
-  .dependsOn(jsonAst)
-  .settings(
-    sharedSettings,
-    name := "json-ops",
-    crossScalaVersions := allScalaCrossVersions,
-    libraryDependencies ++= Seq(
-      commonsIo,
-      commonsText
-    )
-  )
-
-lazy val jsonEncode = (project in file("json-encode"))
-  .dependsOn(compat, jsonOps)
-  .settings(
-    sharedSettings,
-    name := "json-encode",
-    crossScalaVersions := allScalaCrossVersions,
-    libraryDependencies ++= {
-      val v = depver(scalaBinaryVersion.value)
-      Seq(
-        magnolia(v),
-        scalaReflect(v)
-      )
-    }
-  )
-
-lazy val jsonCirce = (project in file("json-circe"))
-  .dependsOn(jsonAst, jsonEncode)
-  .settings(
-    sharedSettings,
-    name := "json-circe",
-    crossScalaVersions := allScalaCrossVersions,
-    libraryDependencies ++= {
-      val v = depver(scalaBinaryVersion.value)
-      Seq(
-        circeCore(v),
-        circeGeneric(v) % Test
-      )
-    }
-  )
 
 lazy val datatypes = (project in file("repro-datatypes"))
-  .dependsOn(jsonAst)
   .settings(sharedSettings)
   .settings(
     name := "repro-datatypes",
@@ -115,7 +63,7 @@ lazy val datatypes = (project in file("repro-datatypes"))
   )
 
 lazy val endpoints = (project in file("repro-endpoints"))
-  .dependsOn(datatypes, jsonCirce)
+  .dependsOn(datatypes)
   .settings(sharedSettings)
   .settings(
     name := "repro-endpoints",
@@ -195,13 +143,13 @@ lazy val server = (project in file("repro-server"))
         logbackClassic,
         scalaLogging,
         akkaHttpTestkit(v) % Test,
-        scalacheck % Test,
+        scalacheck(v) % Test,
         scalatest % Test)
     }
   )
 
 lazy val root = (project in file("."))
-  .aggregate(jsonAst, jsonOps, jsonEncode, jsonCirce, datatypes, endpoints, swagger, server)
+  .aggregate(datatypes, endpoints, swagger, server)
   .settings(
     // crossScalaVersions must be set to Nil on the aggregating project
     crossScalaVersions := Nil,

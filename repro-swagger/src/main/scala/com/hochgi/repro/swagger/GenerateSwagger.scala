@@ -50,12 +50,10 @@ object GenerateSwagger extends App {
       // com.hochgi.repro.endpoints._
       // List(Send.batch, Ctrl.valve, Info.build, ...)
       val EvaluatedAPI(_, openApiDocs) = EvalEndpoints.evalAll(
-        evalRegisterText = _ => (),
-        evalQuerySemiStructured = _ => (),
-        evalListSemiStructureds = _ => (),
-        evalBuild        = _ => (),
-        evalAllConfig    = _ => (),
-        evalConfig       = _ => ())
+        evalgetTree   = _ => (),
+        evalBuild     = _ => (),
+        evalAllConfig = _ => (),
+        evalConfig    = _ => ())
 
       val yamlStr = arguments.stringStyle.fold(openApiDocs.toYaml)(openApiDocs.toYaml)
       Files.write(arguments.file, yamlStr.getBytes(StandardCharsets.UTF_8))

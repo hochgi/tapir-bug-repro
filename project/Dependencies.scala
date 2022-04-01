@@ -11,6 +11,7 @@ object Dependencies {
     def akkaActorArtifact:  String
     def circe:              String
     def magnolia:           String
+    def scalacheck:         String
     def tapir:              Version.Tapir
   }
 
@@ -26,29 +27,32 @@ object Dependencies {
       override val circe              = "0.12.0-M3"
       override val magnolia           = "0.10.0"
       override val akkaActorArtifact  = "akka-actor"
+      override val scalacheck         = "1.15.2"
       override val tapir: Tapir       = Tapir("com.softwaremill.tapir", "0.8.11")
     }
 
     object S212 extends Version {
       override val scalaBinaryVersion = "2.12"
       override val scalaFullVersion   = "2.12.15"
-      override val akkaHttp           = "10.2.7"
-      override val akka               = "2.6.17"
+      override val akkaHttp           = "10.2.9"
+      override val akka               = "2.6.19"
       override val circe              = "0.14.1"
       override val magnolia           = "0.17.0"
       override val akkaActorArtifact  = "akka-actor-typed"
-      override val tapir: Tapir       = Tapir("com.softwaremill.sttp.tapir", "0.19.1")
+      override val scalacheck         = "1.15.4"
+      override val tapir: Tapir       = Tapir("com.softwaremill.sttp.tapir", "1.0.0-M4")
     }
 
     object S213 extends Version {
       override val scalaBinaryVersion = "2.13"
-      override val scalaFullVersion   = "2.13.7"
-      override val akkaHttp           = "10.2.7"
-      override val akka               = "2.6.17"
+      override val scalaFullVersion   = "2.13.8"
+      override val akkaHttp           = "10.2.9"
+      override val akka               = "2.6.19"
       override val circe              = "0.14.1"
       override val magnolia           = "0.17.0"
       override val akkaActorArtifact  = "akka-actor-typed"
-      override val tapir: Tapir       = Tapir("com.softwaremill.sttp.tapir", "0.19.1")
+      override val scalacheck         = "1.15.4"
+      override val tapir: Tapir       = Tapir("com.softwaremill.sttp.tapir", "1.0.0-M4")
     }
   }
 
@@ -69,8 +73,8 @@ object Dependencies {
   val tapirJsonCirce:        V => M = v => v.tapir.org %% "tapir-json-circe"         % v.tapir.version
 
   // sttp
-  val sttp3Akka = "com.softwaremill.sttp.client3" %% "akka-http-backend" % "3.3.1"
-  val sttpSharedAkka = "com.softwaremill.sttp.shared" %% "akka" % "1.2.3"
+  val sttp3Akka = "com.softwaremill.sttp.client3" %% "akka-http-backend" % "3.5.1"
+  val sttpSharedAkka = "com.softwaremill.sttp.shared" %% "akka" % "1.3.2"
 
   // circe
   val circeCore:    V => M = v => "io.circe" %% "circe-core"    % v.circe
@@ -82,8 +86,8 @@ object Dependencies {
   val scalaReflect: V => M = v => "org.scala-lang" %  "scala-reflect" % v.scalaBinaryVersion % Provided
 
   // logging
-  val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.2.3"
-  val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % "3.9.3"
+  val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.2.11"
+  val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4"
 
   // util
   val scopt       = "com.github.scopt"  %% "scopt"        % "4.0.1"
@@ -91,6 +95,6 @@ object Dependencies {
   val commonsIo   = "commons-io"         % "commons-io"   % "2.11.0"
 
   // test
-  val scalacheck = "org.scalacheck" %% "scalacheck"  % "1.15.2"
-  val scalatest  = "org.scalatest"  %% "scalatest"   % "3.2.3"
+  val scalacheck: V => M = v => "org.scalacheck" %% "scalacheck" % v.scalacheck
+  val scalatest  = "org.scalatest"  %% "scalatest"   % "3.2.11"
 }
